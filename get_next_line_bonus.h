@@ -21,6 +21,7 @@ typedef struct s_line
 {
 	char	*p_end;
 	int		read_bytes;
+	char	*temp_line;
 	char	line_buff[BUFFER_SIZE + 1];
 }				t_line;
 
