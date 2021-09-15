@@ -12,70 +12,69 @@
 
 #include "get_next_line.h"
 
-static char	*init_static(char **str)
+static void	init_static(char **str)
 {
 	if (*str == NULL)
 		*str = ft_strndup("", 0);
-	return (*str);
 }
 
-static int	store_readbuff(int fd, t_line *line_obj)
+static int	store_readbuff(int fd, t_line *l_obj)
 {
-	(*line_obj).read_bytes = read(fd, (*line_obj).line_buff, BUFFER_SIZE);
-	if ((*line_obj).read_bytes >= 0)
-		(*line_obj).line_buff[(*line_obj).read_bytes] = '\0';
-	return ((*line_obj).read_bytes);
+	l_obj->read_bytes = read(fd, l_obj->buff, BUFFER_SIZE);
+	if (l_obj->read_bytes >= 0)
+		l_obj->buff[l_obj->read_bytes] = '\0';
+	return (l_obj->read_bytes);
 }
 
-static void	store_endline(t_line *line_obj, char **read_str)
+static void	store_endline(t_line *l_obj, char **r_str)
 {
 	char	*temp;
 
-	temp = ft_substr((*line_obj).p_end, 1, ft_strlen((*line_obj).p_end) - 1);
-	free(*read_str);
-	*read_str = temp;
+	temp = ft_substr(l_obj->p_end, 1, ft_strlen(l_obj->p_end) - 1);
+	free(*r_str);
+	*r_str = temp;
 }
 
-static int	store_prevline(t_line *line_obj, char **read_str, char **line)
+static int	store_prevline(t_line *l_obj, char **line)
 {
-	if ((*line_obj).read_bytes == -1)
+	if (l_obj->read_bytes == -1)
 	{
-		free(*read_str);
-		*read_str = NULL;
+		free(l_obj->r_str);
+		l_obj->r_str = NULL;
 		return (-1);
 	}
-	(*line_obj).p_end = ft_strchr(*read_str, '\n');
-	if (!(*line_obj).p_end)
-		(*line_obj).p_end = ft_strchr(*read_str, '\0');
-	if (line_obj->temp_line)
+	l_obj->p_end = ft_strchr(l_obj->r_str, '\n');
+	if (!l_obj->p_end)
+		l_obj->p_end = ft_strchr(l_obj->r_str, '\0');
+	if (l_obj->l_temp)
 		free(*line);
-	line_obj->temp_line = ft_strndup(*read_str, (*line_obj).p_end - *read_str);
-	*line = line_obj->temp_line;
-	if (ft_strchr(*read_str, '\n'))
+	l_obj->l_temp = ft_strndup(l_obj->r_str, l_obj->p_end - l_obj->r_str);
+	*line = l_obj->l_temp;
+	if (ft_strchr(l_obj->r_str, '\n'))
 	{
-		store_endline(line_obj, read_str);
+		store_endline(l_obj, &l_obj->r_str);
 		return (1);
 	}
 	free(*line);
-	free(*read_str);
-	*read_str = NULL;
+	free(l_obj->r_str);
+	l_obj->r_str = NULL;
 	return (0);
 }
 
 int	get_next_line(int fd, char **line)
 {
-	static t_line	line_obj = {.temp_line = NULL};
-	static char		*read_str = NULL;
+	static t_line	l_obj = {.l_temp = NULL};
+	static char		*r_str = NULL;
 	char			*temp;
 
 	if (fd == -1 || !line || BUFFER_SIZE < 0)
 		return (-1);
-	read_str = init_static(&read_str);
-	while (!(ft_strchr(read_str, '\n')) && store_readbuff(fd, &line_obj) > 0)
+	init_static(&l_obj.r_str);
+	while (!(ft_strchr(l_obj.r_str, '\n')) && store_readbuff(fd, &l_obj) > 0)
 	{
-		temp = ft_strjoin(read_str, line_obj.line_buff);
-		free(read_str);
-		read_str = temp;
+		temp = ft_strjoin(l_obj.r_str, l_obj.buff);
+		free(l_obj.r_str);
+		l_obj.r_str = temp;
 	}
-	return (store_prevline(&line_obj, &read_str, line));
+	return (store_prevline(&l_obj, line));
 }

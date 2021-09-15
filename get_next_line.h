@@ -13,6 +13,10 @@
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
 
+# ifndef BUFFER_SIZE
+# define BUFFER_SIZE 1024
+# endif
+
 # include <unistd.h>
 # include <stdlib.h>
 
@@ -20,8 +24,9 @@ typedef struct s_line
 {
 	char	*p_end;
 	int		read_bytes;
-	char	*temp_line;
-	char	line_buff[BUFFER_SIZE + 1];
+	char	*l_temp;
+	char	*r_str;
+	char	buff[BUFFER_SIZE + 1];
 }				t_line;
 
 int		get_next_line(int fd, char **line);

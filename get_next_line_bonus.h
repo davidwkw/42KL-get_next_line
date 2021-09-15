@@ -13,6 +13,14 @@
 #ifndef GET_NEXT_LINE_BONUS_H
 # define GET_NEXT_LINE_BONUS_H
 
+# ifndef OPEN_MAX
+# define OPEN_MAX 4096
+# endif
+
+# ifndef BUFFER_SIZE
+# define BUFFER_SIZE 1024
+# endif
+
 # include <unistd.h>
 # include <stdlib.h>
 # include <limits.h>
@@ -21,8 +29,9 @@ typedef struct s_line
 {
 	char	*p_end;
 	int		read_bytes;
-	char	*temp_line;
-	char	line_buff[BUFFER_SIZE + 1];
+	char	*l_temp;
+	char	*r_str[OPEN_MAX];
+	char	buff[BUFFER_SIZE + 1];
 }				t_line;
 
 int		get_next_line(int fd, char **line);
