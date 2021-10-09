@@ -24,9 +24,7 @@ typedef struct s_line
 {
 	char	*p_end;
 	int		read_bytes;
-	char	*l_temp;
-	char	*r_str;
-	char	buff[BUFFER_SIZE + 1];
+	char	line_buff[BUFFER_SIZE + 1];
 }				t_line;
 
 int		get_next_line(int fd, char **line);
