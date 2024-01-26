@@ -10,6 +10,13 @@
 # include <unistd.h>
 # include <string.h>
 
+typedef struct s_gnl_data {
+    ssize_t         read_bytes;
+    char            *p_brk;
+    char            *temp;
+    char            *result_str;
+}   t_gnl_data;
+
 char    *get_next_line(int fd);
 
 char    *ft_strjoin(char const *s1, char const *s2);
