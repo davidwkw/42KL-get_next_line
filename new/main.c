@@ -6,6 +6,7 @@
 
 int main(void)
 {
+    // int fd = STDIN_FILENO;
     int fd = open("test.txt", O_RDONLY);
     char *line;
 
@@ -14,13 +15,11 @@ int main(void)
         printf("Failed to open the file\n");
         return (1);
     }
-
     while ((line = get_next_line(fd)) != NULL)
     {
         printf("%s", line);
         free(line);
     }
-
     close(fd);
     return (0);
 }

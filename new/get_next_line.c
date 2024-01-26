@@ -36,10 +36,10 @@ ssize_t read_append_buffer(int fd, char **read_string)
     return (read_bytes);
 }
 
-void free_string(char *str)
+void free_string(char **str)
 {
-    free(str);
-    str = NULL;
+    free(*str);
+    *str = NULL;
 }
 
 char *get_next_line(int fd)
@@ -60,14 +60,14 @@ char *get_next_line(int fd)
         }
         else if (gnl_data.read_bytes <= 0)
         {
-            free_string(read_str);
+            free_string(&read_str);
             return NULL;
         }
         gnl_data.p_brk = ft_strchr(read_str, '\n');
     }
     gnl_data.result_str = ft_substr(read_str, 0, gnl_data.p_brk - read_str + 1);
     gnl_data.temp = ft_strdup(gnl_data.p_brk + !!(*gnl_data.p_brk));
-    free_string(read_str);
+    free_string(&read_str);
     read_str = gnl_data.temp;
     return (gnl_data.result_str);
 }
